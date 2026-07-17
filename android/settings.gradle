@@ -1,0 +1,5 @@
+include ':app'
+
+project(':path_provider_android').projectDir = new File('../.pub-cache/hosted/pub.dartlang.org/path_provider_android-2.2.3/android')
+
+rootProject.name = 'note_app'

@@ -1,0 +1,37 @@
+android/app/src/main/kotlin/com/example/note_app/MainActivity.kt
+
+import io.flutter.plugins.pathprovider.PathProviderPlugin
+
+class MainActivity: FlutterActivity(), MethodCallHandler {
+    private val CHANNEL = "path_provider"
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        MethodChannel(flutterEngine?.dartExecutor?.binaryMessenger, CHANNEL).setMethodCallHandler(this)
+        PathProviderPlugin.registerWith(flutterEngine?.dartExecutor?.binaryMessenger)
+    }
+
+    override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
+        if (call.method == "getTemporaryDirectory") {
+            result.success(getTemporaryDirectory())
+        } else if (call.method == "getApplicationDocumentsDirectory") {
+            result.success(getApplicationDocumentsDirectory())
+        } else if (call.method == "getExternalStorageDirectory") {
+            result.success(getExternalStorageDirectory())
+        } else {
+            result.notImplemented()
+        }
+    }
+
+    private fun getTemporaryDirectory(): String {
+        return cacheDir.absolutePath
+    }
+
+    private fun getApplicationDocumentsDirectory(): String {
+        return filesDir.absolutePath
+    }
+
+    private fun getExternalStorageDirectory(): String {
+        return getExternalFilesDir(null)?.absolutePath ?: ""
+    }
+}
